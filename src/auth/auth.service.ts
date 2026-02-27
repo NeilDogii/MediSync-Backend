@@ -82,7 +82,12 @@ export class AuthService {
   async createDoctor(
     body: Prisma.DoctorCreateInput,
   ): Promise<Prisma.DoctorCreateInput | HttpException> {
-    if (!body.username || !body.password || !body.name || !body.specialty) {
+    if (
+      !body.username ||
+      !body.password ||
+      !body.name ||
+      !body.specialization
+    ) {
       throw new HttpException(
         'All fields are required',
         HttpStatus.BAD_REQUEST,

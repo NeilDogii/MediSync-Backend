@@ -1,12 +1,13 @@
 model Doctor {
-    id        Int             @id @default(autoincrement())
-    name      String
-    username  String          @unique
-    password  String
-    specialty DoctorSpecialty
-    phone     String          @unique
-    email     String          @unique
+    id             Int             @id @default(autoincrement())
+    name           String
+    username       String          @unique
+    password       String
+    specialization DoctorSpecialty @default(CARDIOLOGY)
+    phone          String          @unique
+    email          String          @unique
 
+    isActive  Boolean  @default(true)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
