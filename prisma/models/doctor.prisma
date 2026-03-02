@@ -6,8 +6,27 @@ model Doctor {
     specialization DoctorSpecialty @default(CARDIOLOGY)
     phone          String          @unique
     email          String          @unique
+    fees           Int?
 
-    isActive  Boolean  @default(true)
+    isActive     Boolean       @default(true)
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+    appointments Appointment[]
+}
+
+model Appointment {
+    id             Int               @id @default(autoincrement())
+    condition      String
+    doctorId       Int
+    patientId      Int
+    date           DateTime
+    status         AppointmentStatus @default(SCHEDULED)
+    isPaid         Boolean           @default(false)
+    isPaidToDoctor Boolean           @default(false)
+
+    doctor  Doctor  @relation(fields: [doctorId], references: [id], onDelete: Restrict)
+    patient Patient @relation(fields: [patientId], references: [id], onDelete: Restrict)
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }

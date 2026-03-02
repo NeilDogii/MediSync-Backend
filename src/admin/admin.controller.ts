@@ -14,6 +14,7 @@ import { Prisma } from '@prisma/client';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  // Doctor Management
   @Get('/doctors')
   async getDoctors() {
     return await this.adminService.fetchDoctors();
@@ -35,5 +36,11 @@ export class AdminController {
   @Delete('/doctors/:id')
   async deleteDoctor(@Param('id') id: string) {
     return await this.adminService.deleteDoctor(id);
+  }
+
+  // PATIENT MANAGEMENT
+  @Get('/patients')
+  async getPatients() {
+    return await this.adminService.fetchPatients();
   }
 }

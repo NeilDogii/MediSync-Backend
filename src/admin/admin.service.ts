@@ -95,4 +95,20 @@ export class AdminService {
       );
     }
   }
+
+  async fetchPatients() {
+    try {
+      const data = await this.db.patient.findMany({
+        omit: {
+          password: true,
+        },
+      });
+      return data;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to fetch patients: ' + error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

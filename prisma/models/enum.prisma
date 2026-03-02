@@ -17,3 +17,9 @@ enum Gender {
     OTHER
     PREFER_NOT_TO_SAY
 }
+
+enum AppointmentStatus {
+    SCHEDULED
+    COMPLETED
+    CANCELLED
+}
