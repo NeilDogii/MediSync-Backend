@@ -1,11 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { GoogleGenAI } from '@google/genai';
+import { database } from '../common/utils/database.util';
+import { DoctorSpecialty } from '@prisma/client';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 @Injectable()
 export class AiService {
+  private readonly db = database;
   async getMedicalAdvice(input: string) {
     if (!input) {
       throw new HttpException('Input is required', HttpStatus.BAD_REQUEST);
@@ -38,8 +41,36 @@ export class AiService {
       });
       const StringifiedJson =
         response.candidates?.[0]?.content?.parts?.[0]?.text || null;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return StringifiedJson ? JSON.parse(StringifiedJson) : null;
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const parsedResponse: { causes: string; specialty: string } | null =
+        StringifiedJson ? JSON.parse(StringifiedJson) : null;
+      if (parsedResponse && parsedResponse.causes && parsedResponse.specialty) {
+        const recommendedDoctors = await this.db.doctor.findMany({
+          where: {
+            isActive: true,
+
+            specialization: parsedResponse.specialty as DoctorSpecialty,
+          },
+          omit: {
+            password: true,
+            createdAt: true,
+            updatedAt: true,
+            isActive: true,
+            username: true,
+          },
+        });
+        return {
+          advice: parsedResponse.causes,
+          recommendedSpecialty: parsedResponse.specialty,
+          recommendedDoctors,
+        };
+      } else {
+        throw new HttpException(
+          'Invalid response from AI model',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     } catch (error) {
       throw new HttpException(
         'Error generating medical advice' + error,
