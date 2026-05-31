@@ -179,4 +179,77 @@ export class AuthService {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
   }
+
+  async validateToken(token: string) {
+    if (!token) {
+      throw new HttpException('Token is required', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const result = await this.jwtUtil.verifyToken(token);
+      if (!result) {
+        throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+      }
+      return result;
+    } catch {
+      throw new HttpException(
+        'Token verification failed',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+  }
+
+  async validateUser(id: string) {
+    if (!id) {
+      throw new HttpException('User ID is required', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const data = await this.db.patient.findUnique({
+        where: {
+          id: Number(id),
+        },
+        omit: {
+          password: true,
+          isActive: true,
+        },
+      });
+
+      if (!data) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      return data;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to validate user: ' + error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async updateUser(id: string, body: Prisma.PatientUpdateInput) {
+    if (!id) {
+      throw new HttpException('User ID is required', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const data = await this.db.patient.update({
+        where: {
+          id: Number(id),
+        },
+        data: body,
+        omit: {
+          password: true,
+          isActive: true,
+        },
+      });
+
+      if (!data) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      return { message: 'User updated successfully' };
+    } catch (error) {
+      throw new HttpException(
+        'Failed to update user: ' + error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

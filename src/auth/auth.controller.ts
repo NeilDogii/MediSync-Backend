@@ -1,10 +1,36 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Prisma } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get('/validate-user/:id')
+  async validateUser(@Param('id') id: string) {
+    return await this.authService.validateUser(id);
+  }
+
+  @Post('/update-user/:id')
+  async updateUser(
+    @Param('id') id: string,
+    @Body() body: Prisma.PatientUpdateInput,
+  ) {
+    return await this.authService.updateUser(id, body);
+  }
+
+  @Post('/validate-token')
+  async validateToken(@Body('token') token: string) {
+    return await this.authService.validateToken(token);
+  }
 
   @Post('/patient/login')
   @HttpCode(HttpStatus.OK)
