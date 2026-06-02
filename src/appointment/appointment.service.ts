@@ -23,6 +23,14 @@ export class AppointmentService extends JwtUtil {
               phone: true,
             },
           },
+          report: {
+            select: {
+              condition: true,
+              fullReport: true,
+              remedies: true,
+              date: true,
+            },
+          },
         },
       });
       return data;
@@ -111,6 +119,11 @@ export class AppointmentService extends JwtUtil {
           patientId: Number(patientId),
         },
         include: {
+          patient: {
+            select: {
+              name: true,
+            },
+          },
           doctor: {
             select: {
               name: true,
@@ -118,6 +131,15 @@ export class AppointmentService extends JwtUtil {
               specialization: true,
               phone: true,
               fees: true,
+            },
+          },
+          report: {
+            select: {
+              id: true,
+              condition: true,
+              fullReport: true,
+              remedies: true,
+              date: true,
             },
           },
         },

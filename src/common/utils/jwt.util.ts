@@ -8,7 +8,7 @@ export class JwtUtil {
 
   async generateToken(
     payload: Record<string, any>,
-    expiresIn: string | number = '1h',
+    expiresIn: string | number = '64d',
   ): Promise<string> {
     const JWT = await new SignJWT(payload)
       .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })

@@ -1,0 +1,14 @@
+model Report {
+    id         String @id @default(uuid())
+    condition  String
+    fullReport String
+    remedies   String
+
+    date DateTime @default(now())
+
+    appointmentId Int @unique
+
+    appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+
+    @@index([appointmentId])
+}

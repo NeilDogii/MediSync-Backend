@@ -12,6 +12,9 @@ model Doctor {
     createdAt    DateTime      @default(now())
     updatedAt    DateTime      @updatedAt
     appointments Appointment[]
+
+    @@index([username])
+    @@index([email])
 }
 
 model Appointment {
@@ -29,4 +32,9 @@ model Appointment {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    report    Report?
+
+    @@index([doctorId])
+    @@index([status])
+    @@index([patientId])
 }

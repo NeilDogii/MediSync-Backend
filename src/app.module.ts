@@ -6,9 +6,10 @@ import { AdminModule } from './admin/admin.module';
 import { AiModule } from './ai/ai.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { PeerModule } from './peer/peer.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
-  imports: [AuthModule, AdminModule, AiModule, AppointmentModule, PeerModule],
+  imports: [AuthModule, AdminModule, AiModule, AppointmentModule, PeerModule, ReportModule],
   controllers: [AppController],
   providers: [AppService],
 })

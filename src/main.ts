@@ -7,11 +7,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const server = await app.listen(process.env.PORT ?? 5050);
   const peerService = app.get(PeerService);
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  //@typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
   const peerServer = ExpressPeerServer(server, {
     path: '/video-server',
     allow_discovery: true,

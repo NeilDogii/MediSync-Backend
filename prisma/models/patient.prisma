@@ -12,4 +12,6 @@ model Patient {
     updatedAt DateTime @updatedAt
 
     appointments Appointment[]
+
+    @@index([email])
 }
