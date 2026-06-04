@@ -14,6 +14,26 @@ export class ReportService {
             doctorId: Number(doctorId),
           },
         },
+        include: {
+          appointment: {
+            select: {
+              condition: true,
+              patient: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+              doctor: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+              date: true,
+            },
+          },
+        },
       });
       return reports;
     } catch (error) {
@@ -41,12 +61,6 @@ export class ReportService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    console.log({
-      appointmentId,
-      condition,
-      fullReport,
-      remedies,
-    });
     try {
       const report = await database.report.create({
         data: {

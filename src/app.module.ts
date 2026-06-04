@@ -7,9 +7,10 @@ import { AiModule } from './ai/ai.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { PeerModule } from './peer/peer.module';
 import { ReportModule } from './report/report.module';
+import { MiscModule } from './misc/misc.module';
 
 @Module({
-  imports: [AuthModule, AdminModule, AiModule, AppointmentModule, PeerModule, ReportModule],
+  imports: [AuthModule, AdminModule, AiModule, AppointmentModule, PeerModule, ReportModule, MiscModule],
   controllers: [AppController],
   providers: [AppService],
 })

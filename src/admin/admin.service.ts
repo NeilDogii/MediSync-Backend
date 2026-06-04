@@ -8,6 +8,32 @@ export class AdminService {
   constructor(private readonly encryptUtil: EncryptUtil) {}
   private readonly db = database;
 
+  async fetchAdmin(adminId: number) {
+    if (!adminId) {
+      throw new HttpException('Admin ID is required', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const admin = await this.db.admin.findUnique({
+        where: { id: adminId },
+        select: {
+          id: true,
+          username: true,
+        },
+      });
+
+      if (!admin) {
+        throw new HttpException('Admin not found', HttpStatus.NOT_FOUND);
+      }
+
+      return admin;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to fetch admin details: ' + error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async fetchDoctors() {
     try {
       const data = await this.db.doctor.findMany({

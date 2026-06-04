@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -42,5 +44,14 @@ export class AdminController {
   @Get('/patients')
   async getPatients() {
     return await this.adminService.fetchPatients();
+  }
+
+  @Get('/admin/:adminId')
+  async getAdmin(@Param('adminId') adminId: string) {
+    const adminIdNum = parseInt(adminId, 10);
+    if (isNaN(adminIdNum)) {
+      throw new HttpException('Invalid admin ID', HttpStatus.BAD_REQUEST);
+    }
+    return await this.adminService.fetchAdmin(adminIdNum);
   }
 }
