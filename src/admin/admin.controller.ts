@@ -34,6 +34,13 @@ export class AdminController {
   ) {
     return await this.adminService.updateDoctor({ id, data });
   }
+  @Patch('/admin/:id')
+  async updateAdmin(
+    @Body() data: Prisma.AdminUpdateInput,
+    @Param('id') id: string,
+  ) {
+    return await this.adminService.updateAdmin({ id, data });
+  }
 
   @Delete('/doctors/:id')
   async deleteDoctor(@Param('id') id: string) {
@@ -53,5 +60,10 @@ export class AdminController {
       throw new HttpException('Invalid admin ID', HttpStatus.BAD_REQUEST);
     }
     return await this.adminService.fetchAdmin(adminIdNum);
+  }
+
+  @Get('/reports')
+  async getReports() {
+    return await this.adminService.fetchReports();
   }
 }

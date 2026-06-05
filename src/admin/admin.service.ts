@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { database } from '../common/utils/database.util';
-import { Prisma } from '@prisma/client';
+import { Prisma, Report } from '@prisma/client';
 import { EncryptUtil } from '../common/utils/encrypt.util';
 
 @Injectable()
@@ -45,6 +45,37 @@ export class AdminService {
     } catch (error) {
       throw new HttpException(
         'Failed to fetch doctors: ' + error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async fetchReports() {
+    try {
+      const data = await this.db.report.findMany({
+        include: {
+          appointment: {
+            select: {
+              doctor: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+              patient: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      return data;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to fetch reports: ' + error,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -98,6 +129,35 @@ export class AdminService {
     } catch (error) {
       throw new HttpException(
         'Failed to update doctor: ' + error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async updateAdmin({
+    id,
+    data,
+  }: {
+    id: string;
+    data: Prisma.AdminUpdateInput;
+  }) {
+    if (!data || Object.keys(data).length === 0 || !id || isNaN(Number(id))) {
+      throw new HttpException('Admin data is required', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      if (data.password) {
+        data.password = await this.encryptUtil.encryptPayload(
+          data.password as string,
+        );
+      }
+      const admin = await this.db.admin.update({
+        where: { id: Number(id) },
+        data,
+      });
+      return admin;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to update admin: ' + error,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Patch,
+  Post,
 } from '@nestjs/common';
 import { MiscService } from './misc.service';
 import { Prisma } from '@prisma/client';
@@ -30,6 +31,16 @@ export class MiscController {
       throw new HttpException('Invalid doctor ID', HttpStatus.BAD_REQUEST);
     }
     return await this.miscService.fetchDoctorDashboard(doctorIdNum);
+  }
+
+  @Get('contact-requests')
+  async getContactRequests() {
+    return await this.miscService.fetchContactRequests();
+  }
+
+  @Post('contact-requests')
+  async createContactRequest(@Body() data: Prisma.ContactRequestsCreateInput) {
+    return await this.miscService.createContactRequest(data);
   }
 
   @Patch('doctor-settings/:doctorId')

@@ -148,4 +148,42 @@ export class MiscService {
       );
     }
   }
+
+  async fetchContactRequests() {
+    try {
+      const contactRequests = await this.db.contactRequests.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+      return contactRequests;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to fetch contact requests: ' + error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async createContactRequest(data: Prisma.ContactRequestsCreateInput) {
+    if (!data) {
+      throw new HttpException(
+        'Contact request data is required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    try {
+      const contactRequest = await this.db.contactRequests.create({
+        data,
+      });
+
+      return contactRequest;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to create contact request: ' + error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
