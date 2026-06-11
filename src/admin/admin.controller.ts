@@ -66,4 +66,16 @@ export class AdminController {
   async getReports() {
     return await this.adminService.fetchReports();
   }
+  @Get('/doctor-requests')
+  async getDoctorRequests() {
+    return await this.adminService.fetchDoctorRequests();
+  }
+  @Patch('/doctor-requests/:id/approve')
+  async approveDoctor(@Param('id') id: string) {
+    return await this.adminService.approveDoctor(id);
+  }
+  @Patch('/doctor-requests/:id/reject')
+  async rejectDoctor(@Param('id') id: string) {
+    return await this.adminService.rejectDoctor(id);
+  }
 }

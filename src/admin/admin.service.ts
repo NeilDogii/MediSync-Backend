@@ -181,7 +181,50 @@ export class AdminService {
       );
     }
   }
+  async fetchDoctorRequests() {
+    return await this.db.doctor.findMany({
+      where: {
+        status: 'PENDING',
+      },
+      omit: {
+        password: true,
+      },
+    });
+  }
+  async approveDoctor(id: string) {
+    if (!id || isNaN(Number(id))) {
+      throw new HttpException(
+        'Valid doctor ID is required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
+    return await this.db.doctor.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        status: 'APPROVED' as any,
+      },
+    });
+  }
+  async rejectDoctor(id: string) {
+    if (!id || isNaN(Number(id))) {
+      throw new HttpException(
+        'Valid doctor ID is required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return await this.db.doctor.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        status: 'REJECTED' as any,
+      },
+    });
+  }
   async fetchPatients() {
     try {
       const data = await this.db.patient.findMany({

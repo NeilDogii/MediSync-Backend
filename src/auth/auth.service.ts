@@ -3,8 +3,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtUtil } from '../common/utils/jwt.util';
 import { database } from '../common/utils/database.util';
 import { EncryptUtil } from '../common/utils/encrypt.util';
+// import { Prisma } from '@prisma/client';
 import { Prisma } from '@prisma/client';
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -103,12 +103,13 @@ export class AuthService {
     }
     const hashedPassword = await this.encryptUtil.encryptPayload(body.password);
     const newDoctor = await this.db.doctor.create({
-      data: { ...body, password: hashedPassword },
+      data: { ...body, password: hashedPassword, status: 'PENDING' },
     });
     return newDoctor;
   }
 
   async loginDoctor(body: { username: string; password: string }) {
+    console.log('Login Body:', body);
     if (!body || !body.username || !body.password) {
       throw new HttpException(
         'Username and password are required',
@@ -118,8 +119,25 @@ export class AuthService {
     const user = await this.db.doctor.findFirst({
       where: { username: body.username },
     });
+    console.log('Doctor Found:', user);
+
     if (!user) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+    }
+    const doctorStatus = (user as any).status;
+
+    if (doctorStatus === 'PENDING') {
+      throw new HttpException(
+        'Your account is waiting for admin approval',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    if (doctorStatus === 'REJECTED') {
+      throw new HttpException(
+        'Your doctor request has been rejected',
+        HttpStatus.FORBIDDEN,
+      );
     }
     if (await this.encryptUtil.verifyPayload(body.password, user.password)) {
       const token = await this.jwtUtil.generateToken({

@@ -23,3 +23,8 @@ enum AppointmentStatus {
     COMPLETED
     CANCELLED
 }
+enum DoctorStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}
