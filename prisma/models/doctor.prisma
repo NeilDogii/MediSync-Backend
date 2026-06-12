@@ -8,8 +8,10 @@ model Doctor {
     email          String          @unique
     fees           Int?
 
+    avatarUrl String?
+
     status DoctorStatus @default(PENDING)
-    
+
     isActive     Boolean       @default(true)
     createdAt    DateTime      @default(now())
     updatedAt    DateTime      @updatedAt
