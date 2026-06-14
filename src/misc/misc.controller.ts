@@ -7,9 +7,13 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { MiscService } from './misc.service';
 import { Prisma } from '@prisma/client';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { uploadBufferToCloudinary } from '../common/utils/upload.util';
 
 @Controller('misc')
 export class MiscController {
@@ -53,5 +57,35 @@ export class MiscController {
       throw new HttpException('Invalid doctor ID', HttpStatus.BAD_REQUEST);
     }
     return await this.miscService.updateDoctorSettings(doctorIdNum, settings);
+  }
+
+  @Post('doctor/upload-avatar')
+  @UseInterceptors(
+    FileInterceptor('image', {
+      limits: {
+        fileSize: 5 * 1024 * 1024, // Explicitly set 2MB limit for Multer
+      },
+    }),
+  )
+  async uploadFile(@UploadedFile() file) {
+    if (!file) {
+      throw new HttpException('No file provided', HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+      const result = await uploadBufferToCloudinary(file.buffer);
+      console.log(result);
+
+      return {
+        message: 'Upload successful',
+        url: result.secure_url,
+      };
+    } catch (error) {
+      console.error('Cloudinary upload error:', error);
+      throw new HttpException(
+        'Cloudinary upload failed',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

@@ -21,6 +21,12 @@ export class MiscService {
           specialization: true,
           phone: true,
           fees: true,
+          avatarUrl: true,
+          about: true,
+          worksAt: true,
+          education: true,
+          certifications: true,
+          reviews: true,
         },
       });
 

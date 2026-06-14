@@ -33,6 +33,7 @@ export class AuthService {
     if (await this.encryptUtil.verifyPayload(body.password, user.password)) {
       const token = await this.jwtUtil.generateToken({
         userId: user.id,
+        name: user.name || '',
         role: 'patient',
       });
       return { token };
@@ -74,14 +75,13 @@ export class AuthService {
     });
     const token = await this.jwtUtil.generateToken({
       userId: newUser.id,
+      name: newUser.name || '',
       role: 'patient',
     });
     return { token };
   }
 
-  async createDoctor(
-    body: Prisma.DoctorCreateInput,
-  ): Promise<Prisma.DoctorCreateInput | HttpException> {
+  async createDoctor(body: Prisma.DoctorCreateInput) {
     if (
       !body.username ||
       !body.password ||
@@ -109,7 +109,6 @@ export class AuthService {
   }
 
   async loginDoctor(body: { username: string; password: string }) {
-    console.log('Login Body:', body);
     if (!body || !body.username || !body.password) {
       throw new HttpException(
         'Username and password are required',
@@ -119,7 +118,6 @@ export class AuthService {
     const user = await this.db.doctor.findFirst({
       where: { username: body.username },
     });
-    console.log('Doctor Found:', user);
 
     if (!user) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);

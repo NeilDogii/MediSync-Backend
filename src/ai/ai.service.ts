@@ -42,7 +42,6 @@ export class AiService {
       const StringifiedJson =
         response.candidates?.[0]?.content?.parts?.[0]?.text || null;
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const parsedResponse: { causes: string; specialty: string } | null =
         StringifiedJson ? JSON.parse(StringifiedJson) : null;
       if (parsedResponse && parsedResponse.causes && parsedResponse.specialty) {

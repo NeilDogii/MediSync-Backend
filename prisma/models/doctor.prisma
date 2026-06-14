@@ -8,6 +8,13 @@ model Doctor {
     email          String          @unique
     fees           Int?
 
+    worksAt        String?
+    about          String?
+    education      String[]
+    certifications String[]
+
+    reviews Json[]
+
     avatarUrl String?
 
     status DoctorStatus @default(PENDING)

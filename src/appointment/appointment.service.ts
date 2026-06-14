@@ -16,6 +16,7 @@ export class AppointmentService extends JwtUtil {
         include: {
           patient: {
             select: {
+              id: true,
               name: true,
               email: true,
               age: true,

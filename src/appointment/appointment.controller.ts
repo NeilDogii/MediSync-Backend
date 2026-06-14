@@ -6,13 +6,8 @@ import type { Appointment } from '@prisma/client';
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
-  @Get('/')
-  async fetchAppointments(@Body('doctorId') doctorId?: string) {
-    return await this.appointmentService.fetchAppointments({ doctorId });
-  }
-
   @Get('/:id')
-  async getAppointment(@Body('id') doctorId: string) {
+  async getAppointment(@Param('id') doctorId: string) {
     return await this.appointmentService.fetchAppointments({ doctorId });
   }
 
